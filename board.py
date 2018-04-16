@@ -65,15 +65,40 @@ class Board:
             print()
 
     def insert_pos(self, x, y):
-        self.data[x][y] = 1
-        return self.__check_lines(x, y)
-
-    def __check_lines(self, x, y):
         """
-        Count newly crossed lines and sums up points.
-        Returns points achived
-        :param board:
+        Inserts mark at position (x, y) and returns points achieved by this move
+        Also remembers crossed lines to prevent them from being taken into account in future
+        :param x:
+        :param y:
         :return:
+        """
+        self.data[x][y] = 1
+
+        vertical_points = self.__check_vertical_lines(x)
+        if vertical_points == self.size:
+            self.crossed_vertical_lines.append(x)
+
+        horizontal_points = self.__check_horizontal_lines(y)
+        if horizontal_points == self.size:
+            self.crossed_horizontal_lines.append(y)
+
+        diagonal_left_points = self.__check_diagonal_left(x, y)
+        if diagonal_left_points >= 2:
+            self.crossed_diagonal_lines_top_left.append(self.__get_top_left_diagonal_coords(x, y))
+
+        diagonal_right_points = self.__check_diagonal_right(x, y)
+        if diagonal_right_points >= 2:
+            self.crossed_diagonal_lines_top_right.append(self.__get_top_right_diagonal_coords(x, y))
+
+        return vertical_points + horizontal_points + diagonal_left_points + diagonal_right_points
+
+    def count_points(self, x, y):
+        """
+        Counts how many points one can achieve from given position.
+        Returns points achived
+        :param x:
+        :param y:
+        :return: int
         """
         points = 0
         points += self.__check_vertical_lines(x)
@@ -94,7 +119,6 @@ class Board:
         for i in range(self.size):
             if self.data[x][i] == 0:
                 return 0
-        self.crossed_vertical_lines.append(x)
         return self.size
 
     def __check_horizontal_lines(self, y):
@@ -110,20 +134,30 @@ class Board:
         for i in range(self.size):
             if self.data[i][y] == 0:
                 return 0
-        self.crossed_horizontal_lines.append(y)
         return self.size
 
     def __check_diagonal_lines(self, x, y):
+        """
+        Counts how many points can be achieved from diagonal lines by taking move at (x, y)
+        :param x:
+        :param y:
+        :return:
+        """
         points = 0
         points += self.__check_diagonal_left(x, y)
         points += self.__check_diagonal_right(x, y)
         return points
 
     def __check_diagonal_left(self, x, y):
+        """
+        Counts how many points can be achieved by taking move at (x, y) from crossing diagonal right-to-left
+        :param x:
+        :param y:
+        :return: int points
+        """
         x, y = self.__get_top_left_diagonal_coords(x, y)
         if (x, y) in self.crossed_diagonal_lines_top_left:
             return 0
-        base_x, base_y = x, y
         count = 0
         while x < self.size and y < self.size:
             count += 1
@@ -131,17 +165,20 @@ class Board:
                 return 0
             x += 1
             y += 1
-        if count < 2:
+        if count < 2:  # 2 is minimal amount of diagonal points
             return 0
-        self.__cross_diagonal_left(base_x, base_y)
-        self.crossed_diagonal_lines_top_left.append((base_x, base_y))
         return count
 
     def __check_diagonal_right(self, x, y):
+        """
+        Counts how many points can be achieved by taking move at (x, y) from crossing diagonal left-to-right
+        :param x:
+        :param y:
+        :return: int points
+        """
         x, y = self.__get_top_right_diagonal_coords(x, y)
         if (x, y) in self.crossed_diagonal_lines_top_right:
             return 0
-        base_x, base_y = x, y
         count = 0
         while x >= 0 and y < self.size:
             count += 1
@@ -149,23 +186,9 @@ class Board:
                 return 0
             x -= 1
             y += 1
-        if count < 2:
+        if count < 2:  # 2 is minimal amount of diagonal points
             return 0
-        self.__cross_diagonal_right(base_x, base_y)
-        self.crossed_diagonal_lines_top_right.append((base_x, base_y))
         return count
-
-    def __cross_diagonal_left(self, x, y):
-        while x < self.size and y < self.size:
-            self.data[x][y] = 1
-            x += 1
-            y += 1
-
-    def __cross_diagonal_right(self, x, y):
-        while x >= 0 and y < self.size:
-            self.data[x][y] = 1
-            x += 1
-            y += 1
 
     def __get_top_left_diagonal_coords(self, x, y):
         while x > 0 and y > 0:
