@@ -161,7 +161,7 @@ class Board:
         count = 0
         while x < self.size and y < self.size:
             count += 1
-            if self.data[x][y] != 0:
+            if self.data[x][y] == 0:
                 return 0
             x += 1
             y += 1
@@ -182,7 +182,7 @@ class Board:
         count = 0
         while x >= 0 and y < self.size:
             count += 1
-            if self.data[x][y] != 0:
+            if self.data[x][y] == 0:
                 return 0
             x -= 1
             y += 1
