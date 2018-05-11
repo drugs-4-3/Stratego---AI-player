@@ -54,6 +54,7 @@ class ComputerPlayer:
         :param board:
         :return:
         """
+        # no initial position picked - we have to search for first free
         best_x = -1
         best_y = -1
         best_gain = board.count_points(best_x, best_y)

@@ -100,10 +100,13 @@ class Board:
         :param y:
         :return: int
         """
+        prev_val = self.data[x][y]
+        self.data[x][y] = 1
         points = 0
         points += self.__check_vertical_lines(x)
         points += self.__check_horizontal_lines(y)
         points += self.__check_diagonal_lines(x, y)
+        self.data[x][y] = prev_val
         return points
 
     def __check_vertical_lines(self, x):
