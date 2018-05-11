@@ -54,13 +54,16 @@ class ComputerPlayer:
         :param board:
         :return:
         """
-        best_x = 0
-        best_y = 0
+        best_x = -1
+        best_y = -1
         best_gain = board.count_points(best_x, best_y)
         for y in range(board.size):
             for x in range(board.size):
                 if board.data[x][y] != 0:
                     continue  # don't check position already taken
+                if best_x == -1 and best_y == -1:
+                    best_x = x
+                    best_y = y
                 gain = board.count_points(x, y)
                 print("gain(" + str(x) + "," + str(y) + ") gain: " + str(gain))
                 if gain > best_gain:
