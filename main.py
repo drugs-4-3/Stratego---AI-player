@@ -26,7 +26,7 @@ board_dimension = 5
 board = Board(board_dimension)
 computer_points = 0
 player_points = 0
-cp = ComputerPlayer(ComputerPlayer.ALGORITHM_GREEDY)
+cp = ComputerPlayer(ComputerPlayer.ALGORITHM_GREEDY_CODE)
 counter = 0
 print(board)
 

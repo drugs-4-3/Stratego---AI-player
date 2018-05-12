@@ -1,23 +1,25 @@
 
 from board import Board
 from random import randint
+from node import Node
 
 
 class ComputerPlayer:
 
-    ALGORITHM_RANDOM = 0
-    ALGORITHM_GREEDY = 1
-    ALGORITHM_MINMAX = 2
-    ALGORITHM_ALPHABETA = 3
+    ALGORITHM_RANDOM_CODE = 0
+    ALGORITHM_GREEDY_CODE = 1
+    ALGORITHM_MINMAX_CODE = 2
+    ALGORITHM_ALPHABETA_CODE = 3
+    MINMAX_TREE_DEPTH= 5
 
     def __init__(self, alg_type):
         """
         Initialize artificial player with chosen algorithm to play
         :param alg_type: algorithm type that decides ComputerPlayer moves
         """
-        if alg_type not in [ComputerPlayer.ALGORITHM_RANDOM, ComputerPlayer.ALGORITHM_GREEDY, ComputerPlayer.ALGORITHM_MINMAX, ComputerPlayer.ALGORITHM_ALPHABETA]:
+        if alg_type not in [ComputerPlayer.ALGORITHM_RANDOM_CODE, ComputerPlayer.ALGORITHM_GREEDY_CODE, ComputerPlayer.ALGORITHM_MINMAX_CODE, ComputerPlayer.ALGORITHM_ALPHABETA_CODE]:
             print("No matched algorithm for input " + str(alg_type) + ". Choosing ALGORITHM_RANDOM. ")
-            self.alg_type = ComputerPlayer.ALGORITHM_RANDOM
+            self.alg_type = ComputerPlayer.ALGORITHM_RANDOM_CODE
         else:
             self.alg_type = alg_type
 
@@ -28,11 +30,11 @@ class ComputerPlayer:
         :param board: game board
         :return: tuple (x: int, y: int)
         """
-        if self.alg_type == ComputerPlayer.ALGORITHM_RANDOM:
+        if self.alg_type == ComputerPlayer.ALGORITHM_RANDOM_CODE:
             return self.random_move(board)
-        elif self.alg_type == ComputerPlayer.ALGORITHM_GREEDY:
+        elif self.alg_type == ComputerPlayer.ALGORITHM_GREEDY_CODE:
             return self.greedy_move(board)
-        elif self.alg_type == ComputerPlayer.ALGORITHM_ALPHABETA:
+        elif self.alg_type == ComputerPlayer.ALGORITHM_ALPHABETA_CODE:
             return self.alphabeta_move(board)
         else:
             return self.minmax_move(board)
@@ -80,7 +82,15 @@ class ComputerPlayer:
         :param board:
         :return:
         """
-        pass
+
+        children_nodes = []
+        for (x, y) in board.get_available_positions():
+            children_nodes.append(Node(board.copy(), x, y, True, ComputerPlayer.MINMAX_TREE_DEPTH))
+        best_node = children_nodes[0]
+        for node in children_nodes:
+            if node.get_value() > best_node.get_value():
+                best_node = node
+        return best_node.get_coordinates()
 
     def alphabeta_move(self, board: Board):
         """

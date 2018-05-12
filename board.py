@@ -1,27 +1,48 @@
+import copy
+
 
 class Board:
 
-    def __init__(self, size, data=None):
+    def __init__(self,
+                 size,
+                 data=None,
+                 crossed_vertical_lines=None,
+                 crossed_horizontal_lines=None,
+                 crossed_diagonal_lines_left=None,
+                 crossed_diagonal_lines_right=None):
+
         # dimension of board
         self.size = size
-
-        # list of X coordinates in range (0, size-1) of vertical lines that were already crossed
-        self.crossed_vertical_lines = []
-
-        # list of Y coordinates in range (0, size-1) of horizontal lines that were already crossed
-        self.crossed_horizontal_lines = []
-
-        # list of tuples (x,y) where each element is top left coordinate of diagonal line that was already crossed
-        self.crossed_diagonal_lines_top_left = []
-
-        # list of tuples (x,y) where each element is top right coordinate of diagonal line that was already crossed
-        self.crossed_diagonal_lines_top_right = []
 
         # data is two dimensional array that contains selected by players coordinates
         if data is not None:
             self.data = data
         else:
             self.data = Board.init_data(size)
+
+        # list of X coordinates in range (0, size-1) of vertical lines that were already crossed
+        if crossed_vertical_lines is not None:
+            self.crossed_vertical_lines = crossed_vertical_lines
+        else:
+            self.crossed_vertical_lines = []
+
+        # list of Y coordinates in range (0, size-1) of horizontal lines that were already crossed
+        if crossed_horizontal_lines is not None:
+            self.crossed_horizontal_lines = crossed_horizontal_lines
+        else:
+            self.crossed_horizontal_lines = []
+
+        # list of tuples (x,y) where each element is top left coordinate of diagonal line that was already crossed
+        if crossed_diagonal_lines_left is not None:
+            self.crossed_diagonal_lines_top_left = crossed_diagonal_lines_left
+        else:
+            self.crossed_diagonal_lines_top_left = []
+
+        # list of tuples (x,y) where each element is top right coordinate of diagonal line that was already crossed
+        if crossed_diagonal_lines_right is not None:
+            self.crossed_diagonal_lines_top_right = crossed_diagonal_lines_right
+        else:
+            self.crossed_diagonal_lines_top_right = []
 
     def __str__(self):
         res = "BOARD " + str(self.size) + "x" + str(self.size) + "\n"
@@ -43,7 +64,9 @@ class Board:
     @staticmethod
     def load_from_file(filename):
         """
-            Returns board prepared in text file
+            Returns board prepared in text file.
+            This method doesn't fills the "crossed lines" fields so counting points from such board may be incorrect.
+            TODO: need to implement method that will fill crossed lines for board
             :param filename: String
             :return:
             """
@@ -52,6 +75,7 @@ class Board:
         for line in file:
             elements = line.split(" ")
             data.append(list(map(int, elements)))
+        file.close()
         return Board(len(data), data)
 
     def print_board(self):
@@ -204,3 +228,27 @@ class Board:
             x += 1
             y -= 1
         return x, y
+
+    def get_available_positions(self):
+        """
+        Returns list with tuples (x, y) for each available (not crossed, 0 value) position on board
+        :return:
+        """
+        available_positions= []
+        for y in range(self.size):
+            for x in range(self.size):
+                if self.data[x][y] == 0:
+                    available_positions.append((x, y))
+        return available_positions
+
+    def copy(self):
+        """
+        Returns exact value copy of a Board instance
+        :return:
+        """
+        return Board(self.size,
+                     copy.deepcopy(self.data),
+                     copy.deepcopy(self.crossed_vertical_lines),
+                     copy.deepcopy(self.crossed_horizontal_lines),
+                     copy.deepcopy(self.crossed_diagonal_lines_top_left),
+                     copy.deepcopy(self.crossed_diagonal_lines_top_right))
