@@ -9,7 +9,9 @@ class Board:
                  crossed_vertical_lines=None,
                  crossed_horizontal_lines=None,
                  crossed_diagonal_lines_left=None,
-                 crossed_diagonal_lines_right=None):
+                 crossed_diagonal_lines_right=None,
+                 c_points=0,
+                 p_points=0):
 
         # dimension of board
         self.size = size
@@ -44,11 +46,14 @@ class Board:
         else:
             self.crossed_diagonal_lines_top_right = []
 
+        self.computer_points = c_points
+        self.player_points = p_points
+
     def __str__(self):
         res = "BOARD " + str(self.size) + "x" + str(self.size) + "\n"
         for y in range(self.size):
             for x in range(self.size):
-                res += str(self.data[x][y])
+                res += str(self.data[y][x])
             res += "\n"
         return res
 
@@ -66,6 +71,7 @@ class Board:
         """
             Returns board prepared in text file.
             This method doesn't fills the "crossed lines" fields so counting points from such board may be incorrect.
+            This also doesn't include players points
             TODO: need to implement method that will fill crossed lines for board
             :param filename: String
             :return:
@@ -83,10 +89,25 @@ class Board:
         Prints NxN size board into screen
         :param board: NxN size array
         """
-        for i in range(self.size):
-            for j in range(self.size):
-                print(str(self.data[i][j]) + " ", end='')
+        for x in range(self.size):
+            for y in range(self.size):
+                print(str(self.data[x][y]) + " ", end='')
             print()
+
+    def to_string(self):
+        """
+        Returns string representation of board
+        :return:
+        """
+        result = ""
+        result += ("c_points: " + str(self.computer_points) + "\n")
+        result += ("p_points: " + str(self.player_points) + "\n")
+        for y in range(self.size):
+            for x in range(self.size):
+                result += (str(self.data[y][x]) + " ")
+            result += "\n"
+        return result
+
 
     def insert_pos(self, x, y):
         """
@@ -237,7 +258,7 @@ class Board:
         available_positions= []
         for y in range(self.size):
             for x in range(self.size):
-                if self.data[x][y] == 0:
+                if self.data[y][x] == 0:
                     available_positions.append((x, y))
         return available_positions
 
