@@ -268,7 +268,7 @@ class Board:
         for y in range(self.size):
             for x in range(self.size):
                 if self.get_position(x, y) == 0:
-                    available_positions.append((y, x))
+                    available_positions.append((x, y))
         return available_positions
 
     def copy(self):

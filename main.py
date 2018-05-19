@@ -17,9 +17,8 @@ def finish_game():
 
 
 menu = """
-Stratego: 
-1. to select position enter input in form: x y
-2. to quit game write "quit"
+Please write your input. 
+(To select position enter input in form: x y)
 """
 
 board_dimension = 4
@@ -33,6 +32,7 @@ print(board)
 
 while counter < board_dimension*board_dimension:
     if counter % 2 != 0:
+        print("Please wait. The computer is calculating next move...")
         (x, y) = cp.get_move(board)
         print("computer chooses: (" + str(x) + "," + str(y) + ")")
         points = board.insert_pos(x, y)
@@ -41,7 +41,7 @@ while counter < board_dimension*board_dimension:
         print("computer gets: " + str(points))
     else:
         inp = input(menu).split(" ")
-        (x, y) = (int(inp[0]), int(inp[1])) #reverse x and y because of the difference in array representation and coords
+        (x, y) = (int(inp[0]), int(inp[1]))
         if board.get_position(x, y) == 1:
             print("This position is already taken! Choose something different. ")
             continue
@@ -49,6 +49,9 @@ while counter < board_dimension*board_dimension:
         print("player gets: " + str(points))
         player_points += points
         board.player_points = player_points
+    av_pos = board.get_available_positions()
+    print("available positions: ")
+    print(str(av_pos))
     counter += 1
     print(board)
     print("P: " + str(player_points))

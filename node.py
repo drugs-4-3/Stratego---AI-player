@@ -24,7 +24,6 @@ class Node:
     def get_value(self):
         if self.value is None:
             self.value = self.minmax()
-        print()
         return self.value
 
     def minmax(self):
