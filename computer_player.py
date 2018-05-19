@@ -10,7 +10,7 @@ class ComputerPlayer:
     ALGORITHM_GREEDY_CODE = 1
     ALGORITHM_MINMAX_CODE = 2
     ALGORITHM_ALPHABETA_CODE = 3
-    MINMAX_TREE_DEPTH= 5
+    MINMAX_TREE_DEPTH = 4
 
     def __init__(self, alg_type):
         """
@@ -62,7 +62,7 @@ class ComputerPlayer:
         best_gain = board.count_points(best_x, best_y)
         for y in range(board.size):
             for x in range(board.size):
-                if board.data[x][y] != 0:
+                if board.get_position(x, y) != 0:
                     continue  # don't check position already taken
                 if best_x == -1 and best_y == -1:
                     best_x = x
@@ -74,7 +74,6 @@ class ComputerPlayer:
                     best_x = x
                     best_y = y
         return best_x, best_y
-        pass
 
     def minmax_move(self, board: Board):
         """

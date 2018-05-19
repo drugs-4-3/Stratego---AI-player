@@ -2,6 +2,14 @@ import copy
 
 
 class Board:
+    """
+    Class representing board on which the game is being played.
+    For each position on board the coordinates are represented as (x, y)
+    Top left position is (0, 0),
+    x is incrementing as we go right,
+    y is incremented as we go down,
+    bottom-down position is (board.size - 1, board.size - 1)
+    """
 
     def __init__(self,
                  size,
@@ -50,11 +58,12 @@ class Board:
         self.player_points = p_points
 
     def __str__(self):
-        res = "BOARD " + str(self.size) + "x" + str(self.size) + "\n"
+        res = ""
         for y in range(self.size):
             for x in range(self.size):
                 res += str(self.data[y][x])
             res += "\n"
+        res = res[:-1]
         return res
 
     @classmethod
@@ -84,16 +93,6 @@ class Board:
         file.close()
         return Board(len(data), data)
 
-    def print_board(self):
-        """
-        Prints NxN size board into screen
-        :param board: NxN size array
-        """
-        for x in range(self.size):
-            for y in range(self.size):
-                print(str(self.data[x][y]) + " ", end='')
-            print()
-
     def to_string(self):
         """
         Returns string representation of board
@@ -108,16 +107,16 @@ class Board:
             result += "\n"
         return result
 
-
     def insert_pos(self, x, y):
         """
         Inserts mark at position (x, y) and returns points achieved by this move
         Also remembers crossed lines to prevent them from being taken into account in future
+        Coords are visual coords - not array coords
         :param x:
         :param y:
         :return:
         """
-        self.data[x][y] = 1
+        self.data[y][x] = 1
 
         vertical_points = self.__check_vertical_lines(x)
         if vertical_points == self.size:
@@ -136,6 +135,16 @@ class Board:
             self.crossed_diagonal_lines_top_right.append(self.__get_top_right_diagonal_coords(x, y))
 
         return vertical_points + horizontal_points + diagonal_left_points + diagonal_right_points
+
+    def get_position(self, x, y):
+        """
+        Returns "0" or "1" value of board at coords (x,y)
+        Coords are in visual format - not array positions
+        :param x:
+        :param y:
+        :return:
+        """
+        return self.data[y][x]
 
     def count_points(self, x, y):
         """
@@ -165,7 +174,7 @@ class Board:
             return 0
 
         for i in range(self.size):
-            if self.data[x][i] == 0:
+            if self.data[i][x] == 0:
                 return 0
         return self.size
 
@@ -180,7 +189,7 @@ class Board:
             return 0
 
         for i in range(self.size):
-            if self.data[i][y] == 0:
+            if self.data[y][i] == 0:
                 return 0
         return self.size
 
@@ -198,7 +207,7 @@ class Board:
 
     def __check_diagonal_left(self, x, y):
         """
-        Counts how many points can be achieved by taking move at (x, y) from crossing diagonal right-to-left
+        Counts how many points can be achieved by taking move at (x, y) from crossing diagonal left-to-right
         :param x:
         :param y:
         :return: int points
@@ -209,7 +218,7 @@ class Board:
         count = 0
         while x < self.size and y < self.size:
             count += 1
-            if self.data[x][y] == 0:
+            if self.get_position(x, y) == 0:
                 return 0
             x += 1
             y += 1
@@ -219,7 +228,7 @@ class Board:
 
     def __check_diagonal_right(self, x, y):
         """
-        Counts how many points can be achieved by taking move at (x, y) from crossing diagonal left-to-right
+        Counts how many points can be achieved by taking move at (x, y) from crossing diagonal right-to-left
         :param x:
         :param y:
         :return: int points
@@ -230,7 +239,7 @@ class Board:
         count = 0
         while x >= 0 and y < self.size:
             count += 1
-            if self.data[x][y] == 0:
+            if self.get_position(x, y) == 0:
                 return 0
             x -= 1
             y += 1
@@ -255,11 +264,11 @@ class Board:
         Returns list with tuples (x, y) for each available (not crossed, 0 value) position on board
         :return:
         """
-        available_positions= []
+        available_positions = []
         for y in range(self.size):
             for x in range(self.size):
-                if self.data[y][x] == 0:
-                    available_positions.append((x, y))
+                if self.get_position(x, y) == 0:
+                    available_positions.append((y, x))
         return available_positions
 
     def copy(self):
