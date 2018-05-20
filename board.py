@@ -107,16 +107,13 @@ class Board:
             result += "\n"
         return result
 
-    def insert_pos(self, x, y):
+    def insert_pos(self, x, y, val=1):
         """
         Inserts mark at position (x, y) and returns points achieved by this move
         Also remembers crossed lines to prevent them from being taken into account in future
         Coords are visual coords - not array coords
-        :param x:
-        :param y:
-        :return:
         """
-        self.data[y][x] = 1
+        self.data[y][x] = val
 
         vertical_points = self.__check_vertical_lines(x)
         if vertical_points == self.size:
@@ -154,13 +151,13 @@ class Board:
         :param y:
         :return: int
         """
-        prev_val = self.data[x][y]
-        self.data[x][y] = 1
+        prev_val = self.get_position(x, y)
+        self.data[y][x] = 1
         points = 0
         points += self.__check_vertical_lines(x)
         points += self.__check_horizontal_lines(y)
         points += self.__check_diagonal_lines(x, y)
-        self.data[x][y] = prev_val
+        self.data[y][x] = prev_val
         return points
 
     def __check_vertical_lines(self, x):

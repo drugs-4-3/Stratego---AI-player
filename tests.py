@@ -71,6 +71,30 @@ class TestStrategoMethods(unittest.TestCase):
         self.assertFalse((1, 0) in available_positions)
         self.assertTrue((0, 1) in available_positions)
 
+    def test_counting_possible_points(self):
+        """
+        Make sure that method counting potential points returns correct values
+        :return:
+        """
+        board = Board(4, [[1, 1, 1, 1],
+                          [1, 1, 1, 1],
+                          [1, 1, 1, 1],
+                          [0, 1, 0, 0]])
+
+        points = board.count_points(0, 3)
+        self.assertEqual(points, 8)
+
+        points = board.count_points(3, 3)
+        self.assertEqual(points, 8)
+
+        points = board.count_points(2, 3)
+        self.assertEqual(points, 9)
+
+        # make sure that if some diagonal line is crossed, method doesn't take into account such line
+        board.crossed_diagonal_lines_top_left.append((0, 0))
+        points = board.count_points(3, 3)
+        self.assertEqual(points, 4)
+
     def test_adding_crossed_lines(self):
         """
         Make sure that after crossing line and gaining points,

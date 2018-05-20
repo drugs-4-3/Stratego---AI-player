@@ -10,7 +10,7 @@ class ComputerPlayer:
     ALGORITHM_GREEDY_CODE = 1
     ALGORITHM_MINMAX_CODE = 2
     ALGORITHM_ALPHABETA_CODE = 3
-    MINMAX_TREE_DEPTH = 4
+    MINMAX_TREE_DEPTH = 3
 
     def __init__(self, alg_type):
         """
@@ -45,10 +45,8 @@ class ComputerPlayer:
         :param board:
         :return:
         """
-        x, y = (randint(0, board.size - 1), randint(0, board.size - 1))
-        while board.data[x][y] != 0:
-            x, y = (randint(0, board.size - 1), randint(0, board.size - 1))
-        return x, y
+        available_positions = board.get_available_positions()
+        return available_positions()[randint(0, len(available_positions))]
 
     def greedy_move(self, board: Board):
         """
@@ -81,15 +79,10 @@ class ComputerPlayer:
         :param board:
         :return:
         """
-
-        children_nodes = []
-        for (x, y) in board.get_available_positions():
-            children_nodes.append(Node(board.copy(), x, y, True, ComputerPlayer.MINMAX_TREE_DEPTH))
-        best_node = children_nodes[0]
-        for node in children_nodes:
-            if node.get_value() > best_node.get_value():
-                best_node = node
-        return best_node.get_coordinates()
+        av_pos = board.get_available_positions()
+        children_nodes = [Node(board.copy(), x, y, True, ComputerPlayer.MINMAX_TREE_DEPTH) for x, y in av_pos]
+        children_nodes.sort(key=lambda child: child.get_value(), reverse=True)
+        return children_nodes[0].get_coordinates()
 
     def alphabeta_move(self, board: Board):
         """

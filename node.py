@@ -31,18 +31,22 @@ class Node:
         Returns potential value that player can achieve from given move using minmax algorithm
         :return: int
         """
-        if self.depth <= 0:
+        available_positions = self.board.get_available_positions()
+        if self.depth <= 0 or not available_positions:
             return self.board.computer_points - self.board.player_points
+
+        children = []
+        for (x, y) in available_positions:
+            children.append(Node(self.board.copy(), x, y, not self.maximizing, self.depth - 1))
+
+        best_child = children[0]
+        if self.maximizing:
+            for child in children:
+                if child.get_value() > best_child.get_value():
+                    best_child = child
         else:
-            children = []
-            available_positions = self.board.get_available_positions()
-            for (x, y) in available_positions:
-                children.append(Node(self.board.copy(), x, y, not self.maximizing, self.depth-1))
-            if len(children) > 0:
-                best_child = children[0]
-                for child in children:
-                    if child.get_value() > best_child.get_value():
-                        best_child = child
-                return best_child.get_value()
-            else:
-                return self.board.computer_points - self.board.player_points
+            for child in children:
+                if child.get_value() < best_child.get_value():
+                    best_child = child
+
+        return best_child.get_value()
