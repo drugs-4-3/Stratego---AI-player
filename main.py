@@ -40,11 +40,11 @@ def minmax_greedy_game():
             points = board.insert_pos(x, y)
             minmax_points += points
             print("minmax gets: " + str(points))
+
         counter += 1
         print(board)
         print("GREEDY: " + str(greedy_points))
         print("MINMAX: " + str(minmax_points))
-        sleep(4)
 
     print("GAME OVER!")
     print("GREEDY POINTS: " + str(greedy_points))
@@ -64,14 +64,6 @@ def computer_player_game():
 
     while counter < board_dimension * board_dimension:
         if counter % 2 != 0:
-            print("Please wait. The computer is calculating next move...")
-            (x, y) = cp.get_move(board)
-            print("computer chooses: (" + str(x) + "," + str(y) + ")")
-            points = board.insert_pos(x, y)
-            computer_points += points
-            board.computer_points = computer_points
-            print("computer gets: " + str(points))
-        else:
             inp = input(menu).split(" ")
             (x, y) = (int(inp[0]), int(inp[1]))
             if board.get_position(x, y) == 1:
@@ -81,6 +73,15 @@ def computer_player_game():
             print("player gets: " + str(points))
             player_points += points
             board.player_points = player_points
+        else:
+            print("Please wait. The computer is calculating next move...")
+            (x, y) = cp.get_move(board)
+            print("computer chooses: (" + str(x) + "," + str(y) + ")")
+            points = board.insert_pos(x, y)
+            computer_points += points
+            board.computer_points = computer_points
+            print("computer gets: " + str(points))
+
         av_pos = board.get_available_positions()
         print("available positions: ")
         print(str(av_pos))

@@ -278,4 +278,6 @@ class Board:
                      copy.deepcopy(self.crossed_vertical_lines),
                      copy.deepcopy(self.crossed_horizontal_lines),
                      copy.deepcopy(self.crossed_diagonal_lines_top_left),
-                     copy.deepcopy(self.crossed_diagonal_lines_top_right))
+                     copy.deepcopy(self.crossed_diagonal_lines_top_right),
+                     self.computer_points,
+                     self.player_points)

@@ -10,7 +10,7 @@ class ComputerPlayer:
     ALGORITHM_GREEDY_CODE = 1
     ALGORITHM_MINMAX_CODE = 2
     ALGORITHM_ALPHABETA_CODE = 3
-    MINMAX_TREE_DEPTH = 3
+    MINMAX_TREE_DEPTH = 6
 
     def __init__(self, alg_type):
         """
@@ -80,8 +80,8 @@ class ComputerPlayer:
         :return:
         """
         av_pos = board.get_available_positions()
-        children_nodes = [Node(board.copy(), x, y, True, ComputerPlayer.MINMAX_TREE_DEPTH) for x, y in av_pos]
-        children_nodes.sort(key=lambda child: child.get_value(), reverse=True)
+        children_nodes = [Node(board.copy(), x, y, True, ComputerPlayer.MINMAX_TREE_DEPTH) for (x, y) in av_pos]
+        children_nodes.sort(key=lambda child: self.get_child_value_minmax(child), reverse=True)
         return children_nodes[0].get_coordinates()
 
     def alphabeta_move(self, board: Board):
@@ -90,6 +90,8 @@ class ComputerPlayer:
         :param board:
         :return:
         """
+
+
         pass
 
     def get_gain(self, board, x, y):
@@ -100,3 +102,16 @@ class ComputerPlayer:
         :param y:
         :return:
         """
+
+    def get_child_value_minmax(self, child):
+        print()
+        val = child.minmax()
+        print("choice of: ({},{}), value: {}".format(child.x, child.y, val))
+        return val
+
+
+    def get_child_value_alphabeta(self, child):
+        print()
+        val = child.alphabeta()
+        print("choice of: ({},{}), value: {}".format(child.x, child.y, val))
+        return val
